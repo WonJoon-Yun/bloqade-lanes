@@ -1,0 +1,80 @@
+Running 32 benchmarks × 7 configs (16 workers)...
+Done in 34.8s
+
+==================================================================================================================================
+  benchmark                   Best Existing Method            This Work                                                   
+----------------------------------------------------------------------------------------------------------------------------------
+  GHZ n=16                    11t / 46l (Default)             12t (+9.1%) / 41l (-10.9%) (Lookahead K=2)                  
+  GHZ n=24                    18t / 50l (Default)             19t (+5.6%) / 50l (+0.0%) (Lookahead K=2)                   
+  GHZ n=32                    24t / 80l (Default)             25t (+4.2%) / 81l (+1.2%) (Lookahead K=2)                   
+  GHZ n=40                    30t / 80l (Default)             32t (+6.7%) / 84l (+5.0%) (Lookahead K=2)                   
+  GHZ n=48                    36t / 112l (Default)            37t (+2.8%) / 113l (+0.9%) (Lookahead K=2)                  
+  GHZ n=56                    42t / 112l (Default)            44t (+4.8%) / 116l (+3.6%) (Lookahead K=2)                  
+  GHZ n=64                    48t / 144l (Default)            49t (+2.1%) / 147l (+2.1%) (Lookahead K=2)                  
+  GHZ n=72                    51t / 131l (Default)            53t (+3.9%) / 146l (+11.5%) (Lookahead K=8)                 
+  GHZ n=80                    56t / 157l (CongAware)          59t (+5.4%) / 168l (+7.0%) (Lookahead K=2)                  
+  star n=10                   9t / 13l (Default)              9t (+0.0%) / 13l (+0.0%) (Lookahead K=2)                    
+  star n=15                   14t / 26l (Default)             14t (+0.0%) / 28l (+7.7%) (Lookahead K=2)                   
+  star n=20                   19t / 43l (Default)             19t (+0.0%) / 41l (-4.7%) (Lookahead K=2)                   
+  star n=30                   29t / 70l (Default)             29t (+0.0%) / 68l (-2.9%) (Lookahead K=2)                   
+  star n=40                   39t / 90l (Default)             39t (+0.0%) / 88l (-2.2%) (Lookahead K=2)                   
+  star n=50                   49t / 109l (Default)            49t (+0.0%) / 107l (-1.8%) (Lookahead K=2)                  
+  star n=60                   59t / 130l (Default)            59t (+0.0%) / 128l (-1.5%) (Lookahead K=2)                  
+  hubswap H=2 sp=4 R=3        6t / 10l (Default)              6t (+0.0%) / 10l (+0.0%) (Lookahead K=2)                    
+  hubswap H=3 sp=4 R=3        9t / 15l (Default)              9t (+0.0%) / 15l (+0.0%) (Lookahead K=2)                    
+  hubswap H=3 sp=6 R=3        9t / 21l (Default)              9t (+0.0%) / 17l (-19.0%) (Lookahead K=4)                   
+  hubswap H=3 sp=8 R=3        9t / 18l (Default)              9t (+0.0%) / 14l (-22.2%) (Lookahead K=4)                   
+  hubswap H=4 sp=6 R=3        12t / 24l (Default)             12t (+0.0%) / 20l (-16.7%) (Lookahead K=4)                  
+  hubswap H=4 sp=8 R=3        12t / 26l (Default)             12t (+0.0%) / 18l (-30.8%) (Lookahead K=4)                  
+  BV n=8                      8t / 16l (CongAware)            8t (+0.0%) / 14l (-12.5%) (Lookahead K=2)                   
+  BV n=16                     16t / 33l (CongAware)           16t (+0.0%) / 33l (+0.0%) (Lookahead K=2)                   
+  BV n=32                     32t / 73l (CongAware)           32t (+0.0%) / 73l (+0.0%) (Lookahead K=2)                   
+  BV n=64                     64t / 137l (CongAware)          64t (+0.0%) / 137l (+0.0%) (Lookahead K=2)                  
+  random k=3 n=16             2t / 20l (CongAware)            2t (+0.0%) / 22l (+10.0%) (Lookahead K=2)                   
+  random k=3 n=24             1t / 7l (Default)               1t (+0.0%) / 7l (+0.0%) (Lookahead K=2)                     
+  random k=3 n=40             0t / 0l (Default)               0t (+0.0%) / 0l (+0.0%) (Lookahead K=2)                     
+  brick-wall n=16 d=8         4t / 17l (Default)              4t (+0.0%) / 17l (+0.0%) (Lookahead K=2)                    
+  brick-wall n=24 d=8         4t / 23l (Default)              4t (+0.0%) / 23l (+0.0%) (Lookahead K=2)                    
+  brick-wall n=40 d=8         0t / 0l (Default)               0t (+0.0%) / 0l (+0.0%) (Lookahead K=2)                     
+==================================================================================================================================
+  Aggregate: WIN 19/32 (59.4%)   TIE 11/32   LOSS 2/32 (6.2%)
+
+========================================================================================================================================================================================================
+  benchmark                   Default         CongAware       AODCluster      Lookahead K=2   Lookahead K=4   Lookahead K=6   Lookahead K=8 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  GHZ n=16                    11t/46l         11t/46l         11t/46l         12t/41l         12t/41l         12t/41l         12t/41l       
+  GHZ n=24                    18t/50l         18t/50l         18t/50l         19t/50l         19t/50l         19t/50l         19t/50l       
+  GHZ n=32                    24t/80l         24t/80l         24t/80l         25t/81l         25t/81l         25t/81l         25t/81l       
+  GHZ n=40                    30t/80l         30t/80l         30t/80l         32t/84l         32t/84l         32t/84l         32t/84l       
+  GHZ n=48                    36t/112l        36t/112l        36t/112l        37t/113l        37t/113l        37t/113l        37t/113l      
+  GHZ n=56                    42t/112l        42t/112l        42t/112l        44t/116l        44t/116l        44t/116l        44t/116l      
+  GHZ n=64                    48t/144l        48t/145l        48t/144l        49t/147l        49t/147l        49t/147l        49t/147l      
+  GHZ n=72                    51t/131l        51t/131l        51t/131l        52t/139l        52t/139l        52t/139l        53t/146l      
+  GHZ n=80                    55t/148l        56t/157l        55t/148l        59t/168l        59t/168l        59t/168l        59t/168l      
+  star n=10                   9t/13l          9t/13l          9t/13l          9t/13l          9t/13l          9t/13l          9t/13l        
+  star n=15                   14t/26l         14t/26l         14t/26l         14t/28l         14t/28l         14t/28l         14t/28l       
+  star n=20                   19t/43l         19t/43l         19t/43l         19t/41l         19t/41l         19t/41l         19t/41l       
+  star n=30                   29t/70l         29t/70l         29t/70l         29t/68l         29t/68l         29t/68l         29t/68l       
+  star n=40                   39t/90l         39t/90l         39t/90l         39t/88l         39t/88l         39t/88l         39t/88l       
+  star n=50                   49t/109l        49t/109l        49t/109l        49t/107l        49t/107l        49t/107l        49t/107l      
+  star n=60                   59t/130l        59t/130l        59t/130l        59t/128l        59t/128l        59t/128l        59t/128l      
+  hubswap H=2 sp=4 R=3        6t/10l          6t/10l          6t/10l          6t/10l          6t/10l          6t/10l          6t/10l        
+  hubswap H=3 sp=4 R=3        9t/15l          9t/15l          9t/15l          9t/15l          9t/17l          9t/17l          9t/17l        
+  hubswap H=3 sp=6 R=3        9t/21l          9t/21l          9t/21l          9t/21l          9t/17l          9t/17l          9t/17l        
+  hubswap H=3 sp=8 R=3        9t/18l          9t/18l          9t/18l          9t/18l          9t/14l          9t/14l          9t/14l        
+  hubswap H=4 sp=6 R=3        12t/24l         12t/24l         12t/24l         12t/24l         12t/20l         12t/20l         12t/20l       
+  hubswap H=4 sp=8 R=3        12t/26l         12t/26l         12t/26l         12t/26l         12t/18l         12t/18l         12t/18l       
+  BV n=8                      1t/2l           8t/16l          8t/16l          8t/14l          8t/14l          8t/14l          8t/14l        
+  BV n=16                     1t/2l           16t/33l         16t/33l         16t/33l         16t/33l         16t/33l         16t/33l       
+  BV n=32                     1t/2l           32t/73l         32t/73l         32t/73l         32t/73l         32t/73l         32t/73l       
+  BV n=64                     1t/2l           64t/137l        64t/137l        64t/137l        64t/137l        64t/137l        64t/137l      
+  random k=3 n=16             1t/18l          2t/20l          2t/22l          2t/22l          2t/22l          2t/22l          2t/22l        
+  random k=3 n=24             1t/7l           1t/7l           1t/20l          1t/7l           1t/7l           1t/7l           1t/7l         
+  random k=3 n=40             0t/0l           0t/0l           0t/0l           0t/0l           0t/0l           0t/0l           0t/0l         
+  brick-wall n=16 d=8         4t/17l          4t/17l          4t/17l          4t/17l          4t/17l          4t/17l          4t/17l        
+  brick-wall n=24 d=8         4t/23l          4t/23l          4t/23l          4t/23l          4t/23l          4t/23l          4t/23l        
+  brick-wall n=40 d=8         0t/0l           0t/0l           0t/0l           0t/0l           0t/0l           0t/0l           0t/0l         
+========================================================================================================================================================================================================
+
+Wrote per-benchmark K-sweep CSV → /home/wy3944/FTQC-Sim/quera_libraries/bloqade-lanes/python/tests/heuristics/perf_benchmark_K_sweep.csv
+Wrote per-benchmark K-sweep JSON → /home/wy3944/FTQC-Sim/quera_libraries/bloqade-lanes/python/tests/heuristics/perf_benchmark_K_sweep.json

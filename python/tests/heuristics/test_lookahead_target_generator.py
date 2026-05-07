@@ -16,6 +16,7 @@ from bloqade.lanes.heuristics.physical.movement import (
     RustPlacementTraversal,
 )
 from bloqade.lanes.heuristics.physical.target_generator import (
+    CongestionAwareTargetGenerator,
     DefaultTargetGenerator,
     LookaheadCongestionAwareTargetGenerator,
     TargetContext,
@@ -219,3 +220,182 @@ def test_places_more_stages_on_ghz_n_80():
     # Lookahead-aware places at least +1 more stage on GHZ n=80
     # (on the empirical baseline it places +3).
     assert la_trans > default_trans
+
+
+# ---------------------------------------------------------------------- #
+# 5. Public API export — codex P2-2 reviewer comment                      #
+# ---------------------------------------------------------------------- #
+
+
+def test_public_api_export():
+    """LookaheadCongestionAwareTargetGenerator must be importable from the
+    package root so external users do not need to depend on the deeper
+    ``target_generator`` module path. Mirrors the existing exports for
+    DefaultTargetGenerator / CongestionAwareTargetGenerator /
+    AODClusterTargetGenerator."""
+    from bloqade.lanes.heuristics.physical import (  # noqa: F401
+        LookaheadCongestionAwareTargetGenerator as ExportedLCATG,
+    )
+
+    assert issubclass(ExportedLCATG, TargetGeneratorABC)
+    # Identity check: the deep-path import and the package-root import
+    # must be the same class object (no rewrapping).
+    assert ExportedLCATG is LookaheadCongestionAwareTargetGenerator
+
+
+# ---------------------------------------------------------------------- #
+# 6. Density-guard fallback — weinbe58 STRUCTURAL / PROPOSAL-B            #
+# ---------------------------------------------------------------------- #
+
+
+def _build_dense_stage_ctx():
+    """Build a TargetContext at the dense-stage density boundary.
+
+    Two pairs across 4 atoms => density = 2/4 = 0.5 — exactly at the
+    default threshold. With a non-trivial lookahead window so the
+    lookahead path *would* fire absent the density guard. Tests use
+    a custom ``dense_stage_threshold`` to control which side of the
+    branch fires.
+    """
+    arch = get_physical_arch_spec()
+    qubits = (0, 1, 2, 3)
+    stages = [((0, 1), (2, 3))]
+    layout = PhysicalLayoutHeuristicGraphPartitionCenterOut(
+        arch_spec=arch
+    ).compute_layout(qubits, stages)
+    state = ConcreteState(
+        occupied=frozenset(),
+        layout=tuple(layout),
+        move_count=tuple(0 for _ in layout),
+    )
+    ctx = TargetContext(
+        arch_spec=arch,
+        state=state,
+        controls=(0, 2),
+        targets=(1, 3),
+        # Non-empty lookahead window so any difference really comes from
+        # the density-guard branch (not from empty lookahead being a no-op).
+        lookahead_cz_layers=(((0,), (1,)), ((2,), (3,))),
+        cz_stage_index=0,
+    )
+    return ctx
+
+
+def test_dense_stage_falls_back():
+    """When stage density exceeds ``dense_stage_threshold``, the
+    lookahead generator must defer entirely to
+    :class:`CongestionAwareTargetGenerator` — bit-identical outputs.
+
+    Setup: density = ``len(controls)/n_atoms`` = 2/4 = 0.5 (boundary).
+    Force the fallback with ``dense_stage_threshold=0.4`` so the strict
+    ``>`` comparison fires.
+    """
+    ctx = _build_dense_stage_ctx()
+    # density = 0.5 > threshold = 0.4 → guard fires.
+    la_gen = LookaheadCongestionAwareTargetGenerator(
+        K=4, gamma=0.7, dense_stage_threshold=0.4
+    )
+    cong_gen = CongestionAwareTargetGenerator()
+
+    la_out = la_gen.generate(ctx)
+    cong_out = cong_gen.generate(ctx)
+
+    assert la_out == cong_out, (
+        "When density > dense_stage_threshold, the lookahead generator "
+        "must produce the exact same target list as "
+        "CongestionAwareTargetGenerator."
+    )
+
+
+def test_dense_stage_below_threshold_does_not_fall_back():
+    """Sanity check: when density <= threshold, the lookahead branch
+    is taken (verified indirectly: the test passes a non-trivial
+    lookahead window and confirms generate() does not crash and
+    returns a single candidate)."""
+    ctx = _build_dense_stage_ctx()
+    # density = 0.5; threshold = 0.6 means guard does NOT fire.
+    la_gen = LookaheadCongestionAwareTargetGenerator(
+        K=4, gamma=0.7, dense_stage_threshold=0.6
+    )
+    out = la_gen.generate(ctx)
+    assert isinstance(out, list)
+    assert len(out) == 1
+
+
+@pytest.mark.parametrize("bad_threshold", [0.0, -0.1, 1.5, 2.0])
+def test_rejects_invalid_dense_stage_threshold(bad_threshold):
+    with pytest.raises(
+        ValueError, match=r"dense_stage_threshold=.* must be in \(0, 1\]"
+    ):
+        LookaheadCongestionAwareTargetGenerator(dense_stage_threshold=bad_threshold)
+
+
+# ---------------------------------------------------------------------- #
+# 7. Empty lookahead layers — weinbe58 DOCSTRING-fallback semantics       #
+# ---------------------------------------------------------------------- #
+
+
+def test_empty_lookahead_layers_matches_congestion_aware():
+    """When ``ctx.lookahead_cz_layers`` is empty, ``_simulate_future_cost``
+    contributes zero to the cost (no future stages to score against) and
+    LCATG's behaviour is bit-identical to CongestionAwareTargetGenerator.
+    Documents the empty-layers fallback semantics requested by the
+    reviewer (3b)."""
+    arch = get_physical_arch_spec()
+    qubits = (0, 1, 2, 3)
+    stages = [((0, 1), (2, 3))]
+    layout = PhysicalLayoutHeuristicGraphPartitionCenterOut(
+        arch_spec=arch
+    ).compute_layout(qubits, stages)
+    state = ConcreteState(
+        occupied=frozenset(),
+        layout=tuple(layout),
+        move_count=tuple(0 for _ in layout),
+    )
+    ctx = TargetContext(
+        arch_spec=arch,
+        state=state,
+        controls=(0, 2),
+        targets=(1, 3),
+        lookahead_cz_layers=(),  # empty window
+        cz_stage_index=0,
+    )
+
+    # Set dense_stage_threshold = 1.0 so the density-guard NEVER fires
+    # (density 0.5 <= 1.0). That isolates the empty-layers behaviour.
+    la_gen = LookaheadCongestionAwareTargetGenerator(
+        K=4, gamma=0.7, dense_stage_threshold=1.0
+    )
+    cong_gen = CongestionAwareTargetGenerator()
+
+    assert la_gen.generate(ctx) == cong_gen.generate(ctx), (
+        "When lookahead_cz_layers is empty, lookahead future cost is zero "
+        "for every direction so the choice should match the parent "
+        "CongestionAwareTargetGenerator."
+    )
+
+
+# ---------------------------------------------------------------------- #
+# 8. K-sweep smoke — codex P2-1 (benchmark sweep advertised)              #
+# ---------------------------------------------------------------------- #
+
+
+@pytest.mark.parametrize("K", [2, 4, 6, 8])
+def test_k_sweep_smoke(K):
+    """Instantiate every K∈{2,4,6,8} and run a small placement to confirm
+    no constructor or runtime regression across the advertised K range
+    (mirrors the K-sweep that ``_perf_benchmark.py`` now performs)."""
+    arch = get_physical_arch_spec()
+    qubits, stages = _hub_swap_chain(2, 4, 2)
+    layout = PhysicalLayoutHeuristicGraphPartitionCenterOut(
+        arch_spec=arch
+    ).compute_layout(qubits, stages)
+
+    strat = PhysicalPlacementStrategy(
+        arch_spec=arch,
+        traversal=RustPlacementTraversal(strategy="astar", max_expansions=300),
+        target_generator=LookaheadCongestionAwareTargetGenerator(K=K, gamma=0.7),
+    )
+    n_lanes, n_trans = _run_strategy(strat, layout, stages)
+    assert n_trans > 0, f"K={K}: expected at least one transition placed"
+    assert n_lanes >= 0

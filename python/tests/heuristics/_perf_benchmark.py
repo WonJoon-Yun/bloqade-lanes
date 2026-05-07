@@ -6,18 +6,31 @@ NOT a pytest test. Run directly:
 
 Compares the new generator across K ∈ {2, 4, 6, 8} against the three
 existing target generators (Default, CongAware, AODCluster) on 32
-representative circuit families. Prints a per-benchmark table in the
-form
+representative circuit families. Prints two tables:
 
-    benchmark | Best Existing Method | This Work
+  1. Per-benchmark winner table:
+       benchmark | Best Existing Method | This Work (best across K∈{2,4,6,8})
 
-and aggregate WIN/TIE/LOSS counts. Parallel execution (16 workers).
+  2. Per-K breakdown:
+       benchmark | Default | CongAware | AODCluster | K=2 | K=4 | K=6 | K=8
+
+and aggregate WIN/TIE/LOSS counts (using the best-K column for "This
+Work"). Parallel execution (16 workers).
+
+Side-effects (for reproducibility):
+
+  - Writes a CSV at ``perf_benchmark_K_sweep.csv`` next to this script.
+  - Writes a JSON at ``perf_benchmark_K_sweep.json`` with the full
+    raw results (per-method ``trans``/``lanes`` counts per benchmark).
 """
+
 from __future__ import annotations
 
+import csv
+import json
+import os
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
 
 # ---------------------------------------------------------------------- #
 # Per-benchmark worker                                                    #
@@ -55,7 +68,10 @@ def bench_one(args):
         "Default": DefaultTargetGenerator(),
         "CongAware": CongestionAwareTargetGenerator(),
         "AODCluster": AODClusterTargetGenerator(),
+        "Lookahead K=2": LookaheadCongestionAwareTargetGenerator(K=2, gamma=0.7),
         "Lookahead K=4": LookaheadCongestionAwareTargetGenerator(K=4, gamma=0.7),
+        "Lookahead K=6": LookaheadCongestionAwareTargetGenerator(K=6, gamma=0.7),
+        "Lookahead K=8": LookaheadCongestionAwareTargetGenerator(K=8, gamma=0.7),
     }
 
     out = {}
@@ -159,9 +175,7 @@ def brick_wall(n, depth):
     layers = []
     for d in range(depth):
         even = d % 2 == 0
-        layers.append(
-            tuple((i, i + 1) for i in range(0 if even else 1, n - 1, 2))
-        )
+        layers.append(tuple((i, i + 1) for i in range(0 if even else 1, n - 1, 2)))
     return qubits, layers
 
 
@@ -171,8 +185,7 @@ def build_specs():
         specs.append((f"GHZ n={n}", *ghz(n)))
     for n in [10, 15, 20, 30, 40, 50, 60]:
         specs.append((f"star n={n}", *star(n)))
-    for H, sp, R in [(2, 4, 3), (3, 4, 3), (3, 6, 3), (3, 8, 3),
-                     (4, 6, 3), (4, 8, 3)]:
+    for H, sp, R in [(2, 4, 3), (3, 4, 3), (3, 6, 3), (3, 8, 3), (4, 6, 3), (4, 8, 3)]:
         specs.append((f"hubswap H={H} sp={sp} R={R}", *hub_swap(H, sp, R)))
     for n in [8, 16, 32, 64]:
         specs.append((f"BV n={n}", *bv(n)))
@@ -189,7 +202,13 @@ def build_specs():
 
 
 EXISTING = ("Default", "CongAware", "AODCluster")
-LA_VARIANTS = ("Lookahead K=4",)  # Algorithm default — best across all families.
+LA_VARIANTS = (
+    "Lookahead K=2",
+    "Lookahead K=4",
+    "Lookahead K=6",
+    "Lookahead K=8",
+)
+ALL_METHODS = EXISTING + LA_VARIANTS
 
 
 def best_of(d, keys):
@@ -237,6 +256,53 @@ def render_table(rows):
     )
 
 
+def render_k_sweep_table(rows):
+    """Print a per-K breakdown table. One column per method, with
+    ``trans``/``lanes`` per cell. Helps verify the K-sweep reproducibility
+    claim and pick a per-family K recommendation.
+    """
+    print()
+    print("=" * 200)
+    header_cells = [f"{m:<14}" for m in ALL_METHODS]
+    print(f"  {'benchmark':<26}  " + "  ".join(header_cells))
+    print("-" * 200)
+    for name, d in rows:
+        cells = []
+        for m in ALL_METHODS:
+            v = d.get(m)
+            if v is None:
+                cells.append(f"{'-':<14}")
+            else:
+                cells.append(f"{v['trans']}t/{v['lanes']}l".ljust(14))
+        print(f"  {name:<26}  " + "  ".join(cells))
+    print("=" * 200)
+
+
+def write_csv(rows, path):
+    """Persist the full K-sweep table to CSV (one row per benchmark)."""
+    fieldnames = ["benchmark"]
+    for m in ALL_METHODS:
+        fieldnames.append(f"{m} trans")
+        fieldnames.append(f"{m} lanes")
+    with open(path, "w", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for name, d in rows:
+            row = {"benchmark": name}
+            for m in ALL_METHODS:
+                v = d.get(m, {})
+                row[f"{m} trans"] = v.get("trans", "")
+                row[f"{m} lanes"] = v.get("lanes", "")
+            writer.writerow(row)
+
+
+def write_json(rows, path):
+    """Persist the full K-sweep table to JSON (raw results dict)."""
+    payload = [{"benchmark": name, "results": d} for name, d in rows]
+    with open(path, "w") as fh:
+        json.dump(payload, fh, indent=2)
+
+
 # ---------------------------------------------------------------------- #
 # Main                                                                    #
 # ---------------------------------------------------------------------- #
@@ -244,8 +310,10 @@ def render_table(rows):
 
 def main():
     specs = build_specs()
-    print(f"Running {len(specs)} benchmarks × {len(EXISTING) + len(LA_VARIANTS)} "
-          "configs (16 workers)...")
+    print(
+        f"Running {len(specs)} benchmarks × {len(ALL_METHODS)} "
+        "configs (16 workers)..."
+    )
     t0 = time.perf_counter()
     results = []
     with ProcessPoolExecutor(max_workers=16) as ex:
@@ -257,7 +325,26 @@ def main():
     order = {s[0]: i for i, s in enumerate(specs)}
     results.sort(key=lambda r: order.get(r["name"], 1e9))
     rows = [(r["name"], r["results"]) for r in results if not r.get("skipped")]
+
+    # Sanity assert: every collected row has all four K variants populated.
+    # Fails fast if a constructor change ever breaks the wiring.
+    missing = [
+        (n, [k for k in LA_VARIANTS if k not in d])
+        for n, d in rows
+        if any(k not in d for k in LA_VARIANTS)
+    ]
+    assert not missing, f"K-sweep missing variants for benchmarks: {missing}"
+
     render_table(rows)
+    render_k_sweep_table(rows)
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.join(here, "perf_benchmark_K_sweep.csv")
+    json_path = os.path.join(here, "perf_benchmark_K_sweep.json")
+    write_csv(rows, csv_path)
+    write_json(rows, json_path)
+    print(f"\nWrote per-benchmark K-sweep CSV → {csv_path}")
+    print(f"Wrote per-benchmark K-sweep JSON → {json_path}")
 
 
 if __name__ == "__main__":

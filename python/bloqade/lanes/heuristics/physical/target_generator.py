@@ -603,6 +603,26 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
 
     With ``K=0`` this reduces to :class:`CongestionAwareTargetGenerator`.
 
+    Empty-lookahead fallback: when ``ctx.lookahead_cz_layers`` is empty
+    (e.g. when the placement strategy provides no lookahead window or
+    the current stage is the last one), :meth:`_simulate_future_cost`
+    contributes zero and the generator's behaviour is bit-identical to
+    :class:`CongestionAwareTargetGenerator`. Pass a non-empty layer
+    window through :class:`TargetContext` to activate K-stage scoring.
+
+    Dense-stage fallback (structural limitation): the lookahead's future
+    simulation has a longest-first scoring bias — when scoring the j-th
+    pair of the current stage, the simulated working state reflects only
+    the ``j`` already-committed pairs, so future-stage probes that
+    traverse uncommitted pair atoms use stale endpoints. The bias is
+    largest for the first-scored (longest) pair and shrinks as commits
+    accumulate. On dense stages (``len(controls) / n_atoms >
+    dense_stage_threshold``) this can flip a tiebreak and produce
+    regressions relative to :class:`CongestionAwareTargetGenerator`.
+    For that regime :meth:`generate` defers to the parent
+    :class:`CongestionAwareTargetGenerator` directly. See PR #594 for
+    empirical evidence (brick-wall TIEs, random k=3 regression).
+
     The lookahead favours keeping qubits stable when they are reused in
     the next K stages — useful for hub-and-spoke patterns (single
     repeated control), GHZ ladders (chain neighbours), and magic-state
@@ -612,12 +632,20 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         K: Lookahead horizon in stages. Must be ``>= 0``. Default 4.
         gamma: Per-stage discount factor for simulated future cost. Must
             be in ``(0, 1]``. Default 0.7.
+        dense_stage_threshold: Stage-density threshold above which the
+            generator falls back to the parent
+            :class:`CongestionAwareTargetGenerator` to avoid the
+            longest-first bias. Density is computed as
+            ``len(controls) / n_atoms`` of the current stage. Must be in
+            ``(0, 1]``. Default 0.5 (i.e. fall back when more than half
+            of all atoms are participating in the current stage).
         direction_factor / shared_site_factor: Inherited; same semantics
             as :class:`CongestionAwareTargetGenerator`.
     """
 
     K: int = 4
     gamma: float = 0.7
+    dense_stage_threshold: float = 0.5
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -625,6 +653,11 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
             raise ValueError(f"K={self.K!r} must be >= 0")
         if not 0.0 < self.gamma <= 1.0:
             raise ValueError(f"gamma={self.gamma!r} must be in (0, 1]")
+        if not 0.0 < self.dense_stage_threshold <= 1.0:
+            raise ValueError(
+                f"dense_stage_threshold={self.dense_stage_threshold!r} must "
+                f"be in (0, 1]"
+            )
 
     def _commit_pair(
         self,
@@ -677,6 +710,17 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
     ) -> float:
         """Roll forward up to ``K`` lookahead stages assuming the candidate
         commit, return discounted sum of per-stage cheapest-direction costs.
+
+        Structural limitation (longest-first scoring bias): when scoring
+        pair ``j`` of the current stage, the simulated working state
+        ``sim`` reflects only the ``j`` already-committed pairs from
+        ``state.working``; pairs ``j+1..n-1`` of the *current* stage are
+        still at their pre-stage positions. Lookahead-stage path probes
+        that traverse those qubits therefore use stale endpoints. The
+        bias is largest for the first-scored (longest) pair and shrinks
+        monotonically as commits accumulate. The dense-stage fallback in
+        :meth:`generate` (controlled by ``dense_stage_threshold``) avoids
+        the regime where this bias dominates the signal.
         """
         if infeasible or self.K == 0 or new_loc is None:
             return math.inf if infeasible else 0.0
@@ -717,10 +761,25 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
     def generate(self, ctx: TargetContext) -> list[dict[int, LocationAddress]]:
         """Same as parent's generate(), but threads ``ctx.lookahead_cz_layers``
         through ``state`` so :meth:`_simulate_future_cost` can read it.
+
+        Density-guard fallback: when the current stage is dense
+        (``len(ctx.controls) / n_atoms > dense_stage_threshold``), the
+        longest-first scoring bias documented on
+        :meth:`_simulate_future_cost` makes the lookahead signal
+        unreliable. In that regime this method defers to
+        :class:`CongestionAwareTargetGenerator` (the parent class) for a
+        safe baseline. Sparse stages (the lookahead's empirical
+        sweet-spot — GHZ chains, hub-and-spoke, star) take the full
+        K-stage scoring path.
         """
         placement = ctx.placement
         if not ctx.controls:
             return [dict(placement)]
+
+        # Dense-stage fallback: bias dominates the lookahead signal.
+        n_atoms = len(placement)
+        if n_atoms > 0 and len(ctx.controls) / n_atoms > self.dense_stage_threshold:
+            return super().generate(ctx)
 
         pf = PathFinder(ctx.arch_spec)
         state = _GenerateState(
