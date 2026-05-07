@@ -3,6 +3,7 @@
 NOT a pytest test. Run directly:
 
     python python/tests/heuristics/_perf_benchmark.py
+    python python/tests/heuristics/_perf_benchmark.py --gamma-sweep
 
 Compares the new generator across K ∈ {2, 4, 6, 8} against the three
 existing target generators (Default, CongAware, AODCluster) on 32
@@ -17,6 +18,11 @@ representative circuit families. Prints two tables:
 and aggregate WIN/TIE/LOSS counts (using the best-K column for "This
 Work"). Parallel execution (16 workers).
 
+When run with ``--gamma-sweep`` the K-sweep also varies γ over
+``{0.5, 0.7, 0.9}`` and reports the best-of-K-and-γ per benchmark.
+This is the Approach Theta evidence harness; the production default
+remains γ = 0.7.
+
 Side-effects (for reproducibility):
 
   - Writes a CSV at ``perf_benchmark_K_sweep.csv`` next to this script.
@@ -26,6 +32,7 @@ Side-effects (for reproducibility):
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import os
@@ -38,7 +45,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
 def bench_one(args):
-    name, qubits, stages = args
+    name, qubits, stages, gammas = args
     from bloqade.lanes.analysis.placement import ConcreteState, ExecuteCZ
     from bloqade.lanes.arch.gemini.physical import (
         get_arch_spec as get_physical_arch_spec,
@@ -68,11 +75,11 @@ def bench_one(args):
         "Default": DefaultTargetGenerator(),
         "CongAware": CongestionAwareTargetGenerator(),
         "AODCluster": AODClusterTargetGenerator(),
-        "Lookahead K=2": LookaheadCongestionAwareTargetGenerator(K=2, gamma=0.7),
-        "Lookahead K=4": LookaheadCongestionAwareTargetGenerator(K=4, gamma=0.7),
-        "Lookahead K=6": LookaheadCongestionAwareTargetGenerator(K=6, gamma=0.7),
-        "Lookahead K=8": LookaheadCongestionAwareTargetGenerator(K=8, gamma=0.7),
     }
+    for K in (2, 4, 6, 8):
+        for g in gammas:
+            label = f"Lookahead K={K}" if g == 0.7 else f"Lookahead K={K} γ={g}"
+            tgens[label] = LookaheadCongestionAwareTargetGenerator(K=K, gamma=g)
 
     out = {}
     for label, tg in tgens.items():
@@ -202,13 +209,14 @@ def build_specs():
 
 
 EXISTING = ("Default", "CongAware", "AODCluster")
-LA_VARIANTS = (
-    "Lookahead K=2",
-    "Lookahead K=4",
-    "Lookahead K=6",
-    "Lookahead K=8",
-)
-ALL_METHODS = EXISTING + LA_VARIANTS
+
+
+def _la_labels(gammas):
+    labels = []
+    for K in (2, 4, 6, 8):
+        for g in gammas:
+            labels.append(f"Lookahead K={K}" if g == 0.7 else f"Lookahead K={K} γ={g}")
+    return tuple(labels)
 
 
 def best_of(d, keys):
@@ -225,7 +233,7 @@ def pct(new, old):
     return f"{sign}{p:.1f}%"
 
 
-def render_table(rows):
+def render_table(rows, la_variants):
     """Print the requested 3-column table."""
     print()
     print("=" * 130)
@@ -234,7 +242,7 @@ def render_table(rows):
     wins = ties = losses = 0
     for name, d in rows:
         be_name, be = best_of(d, EXISTING)
-        tw_name, tw = best_of(d, LA_VARIANTS)
+        tw_name, tw = best_of(d, la_variants)
         be_cell = f"{be['trans']}t / {be['lanes']}l ({be_name})"
         t_pct = pct(tw["trans"], be["trans"])
         l_pct = pct(tw["lanes"], be["lanes"])
@@ -254,21 +262,22 @@ def render_table(rows):
         f"  Aggregate: WIN {wins}/{n} ({100*wins/n:.1f}%)   "
         f"TIE {ties}/{n}   LOSS {losses}/{n} ({100*losses/n:.1f}%)"
     )
+    return wins, ties, losses
 
 
-def render_k_sweep_table(rows):
+def render_k_sweep_table(rows, all_methods):
     """Print a per-K breakdown table. One column per method, with
     ``trans``/``lanes`` per cell. Helps verify the K-sweep reproducibility
     claim and pick a per-family K recommendation.
     """
     print()
     print("=" * 200)
-    header_cells = [f"{m:<14}" for m in ALL_METHODS]
+    header_cells = [f"{m:<14}" for m in all_methods]
     print(f"  {'benchmark':<26}  " + "  ".join(header_cells))
     print("-" * 200)
     for name, d in rows:
         cells = []
-        for m in ALL_METHODS:
+        for m in all_methods:
             v = d.get(m)
             if v is None:
                 cells.append(f"{'-':<14}")
@@ -278,10 +287,10 @@ def render_k_sweep_table(rows):
     print("=" * 200)
 
 
-def write_csv(rows, path):
+def write_csv(rows, all_methods, path):
     """Persist the full K-sweep table to CSV (one row per benchmark)."""
     fieldnames = ["benchmark"]
-    for m in ALL_METHODS:
+    for m in all_methods:
         fieldnames.append(f"{m} trans")
         fieldnames.append(f"{m} lanes")
     with open(path, "w", newline="") as fh:
@@ -289,7 +298,7 @@ def write_csv(rows, path):
         writer.writeheader()
         for name, d in rows:
             row = {"benchmark": name}
-            for m in ALL_METHODS:
+            for m in all_methods:
                 v = d.get(m, {})
                 row[f"{m} trans"] = v.get("trans", "")
                 row[f"{m} lanes"] = v.get("lanes", "")
@@ -309,15 +318,29 @@ def write_json(rows, path):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--gamma-sweep",
+        action="store_true",
+        help="Sweep γ ∈ {0.5, 0.7, 0.9} in addition to K (Approach Theta).",
+    )
+    args = parser.parse_args()
+
+    gammas = (0.5, 0.7, 0.9) if args.gamma_sweep else (0.7,)
+    la_variants = _la_labels(gammas)
+    all_methods = EXISTING + la_variants
+
     specs = build_specs()
     print(
-        f"Running {len(specs)} benchmarks × {len(ALL_METHODS)} "
-        "configs (16 workers)..."
+        f"Running {len(specs)} benchmarks × {len(all_methods)} "
+        f"configs (16 workers, γ={list(gammas)})..."
     )
     t0 = time.perf_counter()
     results = []
     with ProcessPoolExecutor(max_workers=16) as ex:
-        futures = {ex.submit(bench_one, s): s[0] for s in specs}
+        futures = {
+            ex.submit(bench_one, (s[0], s[1], s[2], gammas)): s[0] for s in specs
+        }
         for f in as_completed(futures):
             results.append(f.result())
     print(f"Done in {time.perf_counter() - t0:.1f}s")
@@ -326,25 +349,26 @@ def main():
     results.sort(key=lambda r: order.get(r["name"], 1e9))
     rows = [(r["name"], r["results"]) for r in results if not r.get("skipped")]
 
-    # Sanity assert: every collected row has all four K variants populated.
+    # Sanity assert: every collected row has all K variants populated.
     # Fails fast if a constructor change ever breaks the wiring.
     missing = [
-        (n, [k for k in LA_VARIANTS if k not in d])
+        (n, [k for k in la_variants if k not in d])
         for n, d in rows
-        if any(k not in d for k in LA_VARIANTS)
+        if any(k not in d for k in la_variants)
     ]
     assert not missing, f"K-sweep missing variants for benchmarks: {missing}"
 
-    render_table(rows)
-    render_k_sweep_table(rows)
+    render_table(rows, la_variants)
+    render_k_sweep_table(rows, all_methods)
 
     here = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(here, "perf_benchmark_K_sweep.csv")
-    json_path = os.path.join(here, "perf_benchmark_K_sweep.json")
-    write_csv(rows, csv_path)
+    suffix = "_gamma_sweep" if args.gamma_sweep else "_K_sweep"
+    csv_path = os.path.join(here, f"perf_benchmark{suffix}.csv")
+    json_path = os.path.join(here, f"perf_benchmark{suffix}.json")
+    write_csv(rows, all_methods, csv_path)
     write_json(rows, json_path)
-    print(f"\nWrote per-benchmark K-sweep CSV → {csv_path}")
-    print(f"Wrote per-benchmark K-sweep JSON → {json_path}")
+    print(f"\nWrote per-benchmark sweep CSV → {csv_path}")
+    print(f"Wrote per-benchmark sweep JSON → {json_path}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,2082 @@
+[
+  {
+    "benchmark": "GHZ n=16",
+    "results": {
+      "Default": {
+        "trans": 11,
+        "lanes": 46
+      },
+      "CongAware": {
+        "trans": 11,
+        "lanes": 46
+      },
+      "AODCluster": {
+        "trans": 11,
+        "lanes": 46
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=2": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=4": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=6": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=8": {
+        "trans": 12,
+        "lanes": 41
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 11,
+        "lanes": 38
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=24",
+    "results": {
+      "Default": {
+        "trans": 18,
+        "lanes": 50
+      },
+      "CongAware": {
+        "trans": 18,
+        "lanes": 50
+      },
+      "AODCluster": {
+        "trans": 18,
+        "lanes": 50
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=2": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=4": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=6": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=8": {
+        "trans": 19,
+        "lanes": 50
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 50
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=32",
+    "results": {
+      "Default": {
+        "trans": 24,
+        "lanes": 80
+      },
+      "CongAware": {
+        "trans": 24,
+        "lanes": 80
+      },
+      "AODCluster": {
+        "trans": 24,
+        "lanes": 80
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=2": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=4": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=6": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=8": {
+        "trans": 25,
+        "lanes": 81
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 25,
+        "lanes": 81
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=40",
+    "results": {
+      "Default": {
+        "trans": 30,
+        "lanes": 80
+      },
+      "CongAware": {
+        "trans": 30,
+        "lanes": 80
+      },
+      "AODCluster": {
+        "trans": 30,
+        "lanes": 80
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=2": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=4": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=6": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=8": {
+        "trans": 32,
+        "lanes": 84
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 84
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=48",
+    "results": {
+      "Default": {
+        "trans": 36,
+        "lanes": 112
+      },
+      "CongAware": {
+        "trans": 36,
+        "lanes": 112
+      },
+      "AODCluster": {
+        "trans": 36,
+        "lanes": 112
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 37,
+        "lanes": 115
+      },
+      "Lookahead K=2": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 37,
+        "lanes": 115
+      },
+      "Lookahead K=4": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 37,
+        "lanes": 115
+      },
+      "Lookahead K=6": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 37,
+        "lanes": 115
+      },
+      "Lookahead K=8": {
+        "trans": 37,
+        "lanes": 113
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 37,
+        "lanes": 113
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=56",
+    "results": {
+      "Default": {
+        "trans": 42,
+        "lanes": 112
+      },
+      "CongAware": {
+        "trans": 42,
+        "lanes": 112
+      },
+      "AODCluster": {
+        "trans": 42,
+        "lanes": 112
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=2": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=4": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=6": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=8": {
+        "trans": 44,
+        "lanes": 116
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 44,
+        "lanes": 116
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=64",
+    "results": {
+      "Default": {
+        "trans": 48,
+        "lanes": 144
+      },
+      "CongAware": {
+        "trans": 48,
+        "lanes": 145
+      },
+      "AODCluster": {
+        "trans": 48,
+        "lanes": 144
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=2": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=4": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=6": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=8": {
+        "trans": 49,
+        "lanes": 147
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 147
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=72",
+    "results": {
+      "Default": {
+        "trans": 51,
+        "lanes": 131
+      },
+      "CongAware": {
+        "trans": 51,
+        "lanes": 131
+      },
+      "AODCluster": {
+        "trans": 51,
+        "lanes": 131
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=2": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=4": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=6": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 52,
+        "lanes": 139
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 53,
+        "lanes": 146
+      },
+      "Lookahead K=8": {
+        "trans": 53,
+        "lanes": 146
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 54,
+        "lanes": 150
+      }
+    }
+  },
+  {
+    "benchmark": "GHZ n=80",
+    "results": {
+      "Default": {
+        "trans": 55,
+        "lanes": 148
+      },
+      "CongAware": {
+        "trans": 56,
+        "lanes": 157
+      },
+      "AODCluster": {
+        "trans": 55,
+        "lanes": 148
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=2": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=4": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=6": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=8": {
+        "trans": 59,
+        "lanes": 168
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 168
+      }
+    }
+  },
+  {
+    "benchmark": "star n=10",
+    "results": {
+      "Default": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "CongAware": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "AODCluster": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=2": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=4": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=6": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=8": {
+        "trans": 9,
+        "lanes": 13
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 13
+      }
+    }
+  },
+  {
+    "benchmark": "star n=15",
+    "results": {
+      "Default": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "CongAware": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "AODCluster": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 14,
+        "lanes": 28
+      },
+      "Lookahead K=2": {
+        "trans": 14,
+        "lanes": 28
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 14,
+        "lanes": 28
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=4": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=6": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=8": {
+        "trans": 14,
+        "lanes": 26
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 14,
+        "lanes": 26
+      }
+    }
+  },
+  {
+    "benchmark": "star n=20",
+    "results": {
+      "Default": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "CongAware": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "AODCluster": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 41
+      },
+      "Lookahead K=2": {
+        "trans": 19,
+        "lanes": 41
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 41
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=4": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=6": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=8": {
+        "trans": 19,
+        "lanes": 43
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 19,
+        "lanes": 43
+      }
+    }
+  },
+  {
+    "benchmark": "star n=30",
+    "results": {
+      "Default": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "CongAware": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "AODCluster": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 29,
+        "lanes": 68
+      },
+      "Lookahead K=2": {
+        "trans": 29,
+        "lanes": 68
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 29,
+        "lanes": 68
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=4": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=6": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=8": {
+        "trans": 29,
+        "lanes": 70
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 29,
+        "lanes": 70
+      }
+    }
+  },
+  {
+    "benchmark": "star n=40",
+    "results": {
+      "Default": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "CongAware": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "AODCluster": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 39,
+        "lanes": 88
+      },
+      "Lookahead K=2": {
+        "trans": 39,
+        "lanes": 88
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 39,
+        "lanes": 88
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=4": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=6": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=8": {
+        "trans": 39,
+        "lanes": 90
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 39,
+        "lanes": 90
+      }
+    }
+  },
+  {
+    "benchmark": "star n=50",
+    "results": {
+      "Default": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "CongAware": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "AODCluster": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 107
+      },
+      "Lookahead K=2": {
+        "trans": 49,
+        "lanes": 107
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 107
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=4": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=6": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=8": {
+        "trans": 49,
+        "lanes": 109
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 49,
+        "lanes": 109
+      }
+    }
+  },
+  {
+    "benchmark": "star n=60",
+    "results": {
+      "Default": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "CongAware": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "AODCluster": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 128
+      },
+      "Lookahead K=2": {
+        "trans": 59,
+        "lanes": 128
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 128
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=4": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=6": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=8": {
+        "trans": 59,
+        "lanes": 130
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 59,
+        "lanes": 130
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=2 sp=4 R=3",
+    "results": {
+      "Default": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "CongAware": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "AODCluster": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=2": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=4": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=6": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=8": {
+        "trans": 6,
+        "lanes": 10
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 6,
+        "lanes": 10
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=3 sp=4 R=3",
+    "results": {
+      "Default": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "CongAware": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "AODCluster": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "Lookahead K=2": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 15
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=4": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=3 sp=6 R=3",
+    "results": {
+      "Default": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "CongAware": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "AODCluster": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "Lookahead K=2": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 21
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=4": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8": {
+        "trans": 9,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 17
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=3 sp=8 R=3",
+    "results": {
+      "Default": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "CongAware": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "AODCluster": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "Lookahead K=2": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 18
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=4": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=6": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=8": {
+        "trans": 9,
+        "lanes": 14
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 9,
+        "lanes": 14
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=4 sp=6 R=3",
+    "results": {
+      "Default": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "CongAware": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "AODCluster": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "Lookahead K=2": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 24
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=4": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=6": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=8": {
+        "trans": 12,
+        "lanes": 20
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 20
+      }
+    }
+  },
+  {
+    "benchmark": "hubswap H=4 sp=8 R=3",
+    "results": {
+      "Default": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "CongAware": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "AODCluster": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "Lookahead K=2": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 26
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=4": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=6": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=8": {
+        "trans": 12,
+        "lanes": 18
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 12,
+        "lanes": 18
+      }
+    }
+  },
+  {
+    "benchmark": "BV n=8",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 2
+      },
+      "CongAware": {
+        "trans": 8,
+        "lanes": 16
+      },
+      "AODCluster": {
+        "trans": 8,
+        "lanes": 16
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=2": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=4": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=6": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=8": {
+        "trans": 8,
+        "lanes": 14
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 8,
+        "lanes": 14
+      }
+    }
+  },
+  {
+    "benchmark": "BV n=16",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 2
+      },
+      "CongAware": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "AODCluster": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=2": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=4": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=6": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=8": {
+        "trans": 16,
+        "lanes": 33
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 16,
+        "lanes": 33
+      }
+    }
+  },
+  {
+    "benchmark": "BV n=32",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 2
+      },
+      "CongAware": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "AODCluster": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=2": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=4": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=6": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=8": {
+        "trans": 32,
+        "lanes": 73
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 32,
+        "lanes": 73
+      }
+    }
+  },
+  {
+    "benchmark": "BV n=64",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 2
+      },
+      "CongAware": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "AODCluster": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=2": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=4": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=6": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=8": {
+        "trans": 64,
+        "lanes": 137
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 64,
+        "lanes": 137
+      }
+    }
+  },
+  {
+    "benchmark": "random k=3 n=16",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 18
+      },
+      "CongAware": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "AODCluster": {
+        "trans": 2,
+        "lanes": 22
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=2": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=4": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=6": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=8": {
+        "trans": 2,
+        "lanes": 20
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 2,
+        "lanes": 20
+      }
+    }
+  },
+  {
+    "benchmark": "random k=3 n=24",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "CongAware": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "AODCluster": {
+        "trans": 1,
+        "lanes": 20
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=2": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=4": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=6": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=8": {
+        "trans": 1,
+        "lanes": 7
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 1,
+        "lanes": 7
+      }
+    }
+  },
+  {
+    "benchmark": "random k=3 n=40",
+    "results": {
+      "Default": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "CongAware": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "AODCluster": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      }
+    }
+  },
+  {
+    "benchmark": "brick-wall n=16 d=8",
+    "results": {
+      "Default": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "CongAware": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "AODCluster": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=2": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=4": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=6": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=8": {
+        "trans": 4,
+        "lanes": 17
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 17
+      }
+    }
+  },
+  {
+    "benchmark": "brick-wall n=24 d=8",
+    "results": {
+      "Default": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "CongAware": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "AODCluster": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=2": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=4": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=6": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=8": {
+        "trans": 4,
+        "lanes": 23
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 4,
+        "lanes": 23
+      }
+    }
+  },
+  {
+    "benchmark": "brick-wall n=40 d=8",
+    "results": {
+      "Default": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "CongAware": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "AODCluster": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=2 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=4 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=6 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8 \u03b3=0.5": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8": {
+        "trans": 0,
+        "lanes": 0
+      },
+      "Lookahead K=8 \u03b3=0.9": {
+        "trans": 0,
+        "lanes": 0
+      }
+    }
+  }
+]

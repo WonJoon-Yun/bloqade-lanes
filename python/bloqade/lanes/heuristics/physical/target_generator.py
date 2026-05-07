@@ -331,6 +331,13 @@ class _GenerateState:
     committed_lanes: dict[_LaneKey, _LaneDirCounts]
     committed_sites: set[LocationAddress]
     lookahead_cz_layers: tuple[tuple[tuple[int, ...], tuple[int, ...]], ...] = ()
+    # Pairs of the *current* stage that have not yet been scored/committed.
+    # Updated by ``generate()`` after each commit. Used by Approach Gamma
+    # (predicted-commit pre-pass) inside
+    # :meth:`LookaheadCongestionAwareTargetGenerator._simulate_future_cost`
+    # to stamp predicted endpoints for not-yet-committed pairs into the
+    # simulation state, eliminating the longest-first scoring bias.
+    remaining_pairs: tuple[tuple[int, int], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -610,18 +617,28 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
     :class:`CongestionAwareTargetGenerator`. Pass a non-empty layer
     window through :class:`TargetContext` to activate K-stage scoring.
 
-    Dense-stage fallback (structural limitation): the lookahead's future
-    simulation has a longest-first scoring bias — when scoring the j-th
-    pair of the current stage, the simulated working state reflects only
-    the ``j`` already-committed pairs, so future-stage probes that
-    traverse uncommitted pair atoms use stale endpoints. The bias is
-    largest for the first-scored (longest) pair and shrinks as commits
-    accumulate. On dense stages (``len(controls) / n_atoms >
-    dense_stage_threshold``) this can flip a tiebreak and produce
-    regressions relative to :class:`CongestionAwareTargetGenerator`.
-    For that regime :meth:`generate` defers to the parent
-    :class:`CongestionAwareTargetGenerator` directly. See PR #594 for
-    empirical evidence (brick-wall TIEs, random k=3 regression).
+    Dense-stage fallback (structural limitation, mitigated by Approach
+    Gamma): the K-stage simulation has a longest-first scoring bias when
+    ``predicted_commits=False`` — when scoring the j-th pair of the
+    current stage, the simulated working state reflects only the ``j``
+    already-committed pairs, so future-stage probes that traverse
+    uncommitted pair atoms use stale endpoints. With
+    ``predicted_commits=True`` (default, Approach Gamma), the bias is
+    eliminated by a pre-pass that predicts the post-commit positions of
+    every uncommitted current-stage pair and stamps those predicted
+    endpoints into ``sim`` before the K-stage walk. On dense stages
+    (``len(controls) / n_atoms > dense_stage_threshold``) the residual
+    instability can still flip a tiebreak, so :meth:`generate` defers to
+    the parent :class:`CongestionAwareTargetGenerator` for safety.
+
+    Hub-pin heuristic (Approach Eta): on single-pair stages where the
+    control qubit appears as control in ``hub_pin_min_repeats`` or more
+    of the next K lookahead stages, the generator pins the control and
+    moves the target instead. This matches the canonical Default-style
+    behaviour on star-shaped circuits, where a single hub vertex is
+    reused across many stages — moving the spoke instead of the hub
+    keeps the hub stationary and packs more transitions per move. Set
+    ``hub_pin_min_repeats <= 0`` to disable.
 
     The lookahead favours keeping qubits stable when they are reused in
     the next K stages — useful for hub-and-spoke patterns (single
@@ -637,15 +654,35 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
             :class:`CongestionAwareTargetGenerator` to avoid the
             longest-first bias. Density is computed as
             ``len(controls) / n_atoms`` of the current stage. Must be in
-            ``(0, 1]``. Default 0.5 (i.e. fall back when more than half
-            of all atoms are participating in the current stage).
+            ``(0, 1]``. Default 0.3 (i.e. fall back when more than 30%
+            of all atoms are participating in the current stage). The
+            threshold was bisected against the 32-benchmark perf suite
+            (``_perf_benchmark.py``): 0.3 is the largest value that
+            still defers ``random k=3 n=16``'s sparse-mixed stages
+            (densities 0.375 / 0.875 / 0.75) to CongAware while leaving
+            GHZ / star / hubswap / BV (density ≤ 2/n) on the lookahead
+            path.
+        predicted_commits: If True (default), run a pre-pass before the
+            K-stage simulation that predicts the post-commit endpoints
+            of every uncommitted current-stage pair and stamps them into
+            the simulation state (Approach Gamma). Eliminates the
+            longest-first scoring bias documented on
+            :meth:`_simulate_future_cost`. Set to False to reproduce the
+            round-3 (PR #594 revision) behaviour bit-identically.
+        hub_pin_min_repeats: Minimum number of upcoming K-stages in
+            which the control of a single-pair current stage must appear
+            (as control) for the hub-pin heuristic (Approach Eta) to
+            fire. When the rule fires, the generator moves the target
+            (= Default direction). Default 3. Set ``<= 0`` to disable.
         direction_factor / shared_site_factor: Inherited; same semantics
             as :class:`CongestionAwareTargetGenerator`.
     """
 
     K: int = 4
     gamma: float = 0.7
-    dense_stage_threshold: float = 0.5
+    dense_stage_threshold: float = 0.3
+    predicted_commits: bool = True
+    hub_pin_min_repeats: int = 3
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -658,6 +695,16 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
                 f"dense_stage_threshold={self.dense_stage_threshold!r} must "
                 f"be in (0, 1]"
             )
+
+    def _count_ctrl_repeats(self, state: _GenerateState, ctrl: int) -> int:
+        """Count how often ``ctrl`` appears as a control in the next K
+        lookahead stages. Used by the Eta hub-pin heuristic.
+        """
+        n = 0
+        for la_ctrls, _ in state.lookahead_cz_layers[: self.K]:
+            if ctrl in la_ctrls:
+                n += 1
+        return n
 
     def _commit_pair(
         self,
@@ -680,6 +727,23 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         cost_tgt_now = _sum_weighted(path_tgt, weight) if path_tgt else math.inf
         if cost_ctrl_now == math.inf and cost_tgt_now == math.inf:
             return None
+
+        # Approach Eta — hub-pin heuristic. On a single-pair stage where
+        # ``ctrl`` repeats as control across many upcoming stages, force
+        # the control-side commit to match :class:`DefaultTargetGenerator`'s
+        # behaviour. Skip the K-stage roll-forward (which gives no useful
+        # signal on a single-pair stage) and the cost comparison.
+        # Empirically this recovers the canonical 13l/26l result on the
+        # ``star n=10`` and ``star n=15`` benchmarks where Lookahead's
+        # multi-stage probe otherwise picks the opposite direction.
+        # No-op on multi-pair stages or when the control is not a hub.
+        if (
+            self.hub_pin_min_repeats > 0
+            and len(state.remaining_pairs) == 0
+            and path_ctrl is not None
+            and self._count_ctrl_repeats(state, ctrl) >= self.hub_pin_min_repeats
+        ):
+            return (ctrl, ctrl_partner, path_ctrl)
 
         future_ctrl = self._simulate_future_cost(
             state, ctrl, ctrl_partner, path_ctrl is None
@@ -711,31 +775,23 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         """Roll forward up to ``K`` lookahead stages assuming the candidate
         commit, return discounted sum of per-stage cheapest-direction costs.
 
-        Structural limitation (longest-first scoring bias): when scoring
-        pair ``j`` of the current stage, the simulated working state
-        ``sim`` reflects only the ``j`` already-committed pairs from
-        ``state.working``; pairs ``j+1..n-1`` of the *current* stage are
-        still at their pre-stage positions. Lookahead-stage path probes
-        that traverse those qubits therefore use stale endpoints. The
-        bias is largest for the first-scored (longest) pair and shrinks
-        monotonically as commits accumulate. The dense-stage fallback in
-        :meth:`generate` (controlled by ``dense_stage_threshold``) avoids
-        the regime where this bias dominates the signal.
+        Approach Gamma (predicted-commit pre-pass, default-on via
+        ``predicted_commits``): when scoring pair ``j`` of the current
+        stage, every still-uncommitted pair ``i > j`` (in
+        ``state.remaining_pairs``) gets its cheapest-direction prediction
+        stamped into the simulation state ``sim`` *before* the K-stage
+        walk. Without this pre-pass, the K-stage probes route from the
+        still-pre-stage positions of pairs ``j+1..n-1``, biasing the
+        signal in favour of whatever the longest pair (scored first)
+        decides to do; Gamma corrects the bias at its source.
 
-        FUTURE WORK (Approach Gamma — predicted-commit pre-pass):
-        the structural fix is to predict the post-commit positions of
-        the still-uncommitted current-stage pairs ``j+1..n-1`` *before*
-        scoring pair ``j``, and stamp those predicted endpoints into
-        ``sim`` so lookahead path probes traverse the actual post-stage
-        topology rather than stale pre-stage positions. A natural
-        implementation is a single Dijkstra pre-pass over the un-
-        committed pairs at the start of each :meth:`generate` call
-        (cost roughly ``O(n^2 * K)`` for ``n`` current-stage pairs and
-        ``K`` lookahead stages), caching the predicted endpoints on
-        ``state``. The current density-guard (Approach Beta) suppresses
-        the symptom; Gamma would correct the bias at its source. Tracked
-        as PR #594 follow-up; see also ``AGENT3_VERDICT.md`` §3 in the
-        FTQC-Sim parent repo's ``scripts/bloqade_lanes_contrib/``.
+        With ``predicted_commits=False`` the pre-pass is skipped and the
+        method behaves bit-identically to the round-3 (PR #594 revision)
+        implementation, which suffered from the longest-first scoring
+        bias. The dense-stage fallback in :meth:`generate` (controlled
+        by ``dense_stage_threshold``) is the round-3 mitigation; with
+        Gamma the guard is a belt-and-braces safety net rather than the
+        primary defence.
         """
         if infeasible or self.K == 0 or new_loc is None:
             return math.inf if infeasible else 0.0
@@ -745,6 +801,42 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
 
         def weight_base(lane: LaneAddress) -> float:
             return state.pf.metrics.get_lane_duration_cost(lane)
+
+        # Approach Gamma — predicted-commit pre-pass. Stamp predicted
+        # post-commit endpoints for every still-uncommitted current-stage
+        # pair into ``sim`` so the K-stage probes below use the correct
+        # downstream graph instead of stale pre-stage endpoints. Uses
+        # cheapest-direction prediction (rule G1 from PR #594 R4 plan):
+        # probe both directions under ``weight_base`` and stamp the
+        # cheaper endpoint. Pairs that are infeasible in both directions
+        # are left unmodified — the main scorer will reject this commit.
+        if self.predicted_commits:
+            for c_k, t_k in state.remaining_pairs:
+                # Skip pairs that overlap the candidate move (the mover
+                # was already stamped above; same atom moving twice in
+                # one step is incoherent).
+                if c_k == mover or t_k == mover:
+                    continue
+                _, _, p_c, p_t = _probe_pair(
+                    state.arch_spec,
+                    state.pf,
+                    sim,
+                    c_k,
+                    t_k,
+                    edge_weight=weight_base,
+                )
+                cc = _sum_weighted(p_c, weight_base) if p_c is not None else math.inf
+                ct = _sum_weighted(p_t, weight_base) if p_t is not None else math.inf
+                if cc == math.inf and ct == math.inf:
+                    continue
+                if cc <= ct and p_c is not None:
+                    partner = state.arch_spec.get_cz_partner(sim[t_k])
+                    if partner is not None:
+                        sim[c_k] = partner
+                elif p_t is not None:
+                    partner = state.arch_spec.get_cz_partner(sim[c_k])
+                    if partner is not None:
+                        sim[t_k] = partner
 
         total = 0.0
         for k, (la_ctrls, la_tgts) in enumerate(state.lookahead_cz_layers[: self.K]):
@@ -807,7 +899,11 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         )
 
         pairs = self._sort_pairs_longest_first(ctx, pf)
-        for ctrl, tgt in pairs:
+        for i, (ctrl, tgt) in enumerate(pairs):
+            # Thread the still-uncommitted pairs through state for both
+            # the Eta hub-pin heuristic (single-pair detection via empty
+            # remaining_pairs) and the Gamma predicted-commit pre-pass.
+            state.remaining_pairs = tuple(pairs[i + 1 :])
             result = self._commit_pair(state, ctrl, tgt)
             if result is None:
                 return []

@@ -350,15 +350,15 @@
       },
       "Lookahead K=4": {
         "trans": 14,
-        "lanes": 28
+        "lanes": 26
       },
       "Lookahead K=6": {
         "trans": 14,
-        "lanes": 28
+        "lanes": 26
       },
       "Lookahead K=8": {
         "trans": 14,
-        "lanes": 28
+        "lanes": 26
       }
     }
   },
@@ -383,15 +383,15 @@
       },
       "Lookahead K=4": {
         "trans": 19,
-        "lanes": 41
+        "lanes": 43
       },
       "Lookahead K=6": {
         "trans": 19,
-        "lanes": 41
+        "lanes": 43
       },
       "Lookahead K=8": {
         "trans": 19,
-        "lanes": 41
+        "lanes": 43
       }
     }
   },
@@ -416,15 +416,15 @@
       },
       "Lookahead K=4": {
         "trans": 29,
-        "lanes": 68
+        "lanes": 70
       },
       "Lookahead K=6": {
         "trans": 29,
-        "lanes": 68
+        "lanes": 70
       },
       "Lookahead K=8": {
         "trans": 29,
-        "lanes": 68
+        "lanes": 70
       }
     }
   },
@@ -449,15 +449,15 @@
       },
       "Lookahead K=4": {
         "trans": 39,
-        "lanes": 88
+        "lanes": 90
       },
       "Lookahead K=6": {
         "trans": 39,
-        "lanes": 88
+        "lanes": 90
       },
       "Lookahead K=8": {
         "trans": 39,
-        "lanes": 88
+        "lanes": 90
       }
     }
   },
@@ -482,15 +482,15 @@
       },
       "Lookahead K=4": {
         "trans": 49,
-        "lanes": 107
+        "lanes": 109
       },
       "Lookahead K=6": {
         "trans": 49,
-        "lanes": 107
+        "lanes": 109
       },
       "Lookahead K=8": {
         "trans": 49,
-        "lanes": 107
+        "lanes": 109
       }
     }
   },
@@ -515,15 +515,15 @@
       },
       "Lookahead K=4": {
         "trans": 59,
-        "lanes": 128
+        "lanes": 130
       },
       "Lookahead K=6": {
         "trans": 59,
-        "lanes": 128
+        "lanes": 130
       },
       "Lookahead K=8": {
         "trans": 59,
-        "lanes": 128
+        "lanes": 130
       }
     }
   },
@@ -874,19 +874,19 @@
       },
       "Lookahead K=2": {
         "trans": 2,
-        "lanes": 22
+        "lanes": 20
       },
       "Lookahead K=4": {
         "trans": 2,
-        "lanes": 22
+        "lanes": 20
       },
       "Lookahead K=6": {
         "trans": 2,
-        "lanes": 22
+        "lanes": 20
       },
       "Lookahead K=8": {
         "trans": 2,
-        "lanes": 22
+        "lanes": 20
       }
     }
   },
