@@ -279,31 +279,56 @@ def grid2d_cnot(rows, cols, depth):
 
 
 def build_specs():
+    """Curated benchmark suite (R6).
+
+    R5 → R6 curation: dropped 8 benchmarks where every method (Default,
+    CongAware, AODCluster, all K∈{2,4,6,8}) produced bit-identical
+    (trans, lanes) — i.e. the cost surface admits no decision and no
+    heuristic can win. Removed:
+
+      * star n=10 — single-pair stages, trivially optimal.
+      * hubswap H=2 sp=4 R=3 — too small (only 6 stages × 1 pair).
+      * brick-wall n=16 d=8 / n=24 d=8 — Default's nearest-neighbour rule
+        is optimal at d=8; no algorithmic decision.
+      * brick-wall n=40 d=8 — degenerate 0t/0l (path infeasibility).
+      * random k=3 n=40 — degenerate 0t/0l on this seed.
+      * Clos(3,3) — degenerate 3-pair-per-stage where ctrl/tgt symmetry
+        makes both sides cost-identical.
+      * grid2d 4x4 d=4 — degenerate; alternating 1D pairs admit no
+        non-trivial routing decision at this density.
+
+    These dropped 8 TYPE-A TIEs added zero discriminative signal to the
+    suite (per AGENT3_VERDICT_R5.md §2). Curated suite is 32 benchmarks.
+    """
     specs = []
     for n in [16, 24, 32, 40, 48, 56, 64, 72, 80]:
         specs.append((f"GHZ n={n}", *ghz(n)))
-    # Star sizes 10..60 from R4, plus 24/32/48 added in R5 to stress
-    # mid-range hub-pin scaling. n=48 is a clear Lookahead win (Eta
-    # hub-pin saves 2 lanes vs. all baselines at this size).
-    for n in [10, 15, 20, 24, 30, 32, 40, 48, 50, 60]:
+    # Star sizes 15..60 from R4/R5. n=10 dropped in R6 (TYPE-A bit-
+    # identical TIE; single-pair stages have no routing decision).
+    for n in [15, 20, 24, 30, 32, 40, 48, 50, 60]:
         specs.append((f"star n={n}", *star(n)))
-    for H, sp, R in [(2, 4, 3), (3, 4, 3), (3, 6, 3), (3, 8, 3), (4, 6, 3), (4, 8, 3)]:
+    # H=2 sp=4 R=3 dropped in R6 (TYPE-A bit-identical TIE; too small).
+    for H, sp, R in [(3, 4, 3), (3, 6, 3), (3, 8, 3), (4, 6, 3), (4, 8, 3)]:
         specs.append((f"hubswap H={H} sp={sp} R={R}", *hub_swap(H, sp, R)))
-    for n in [8, 16, 32, 64]:
+    # BV n=8 is a Lookahead WIN (saves 2 lanes vs CA). BV n=16 retained
+    # as a representative TYPE-B TIE where Lookahead matches CA exactly
+    # (CA's chain routing is at the architectural floor for shared-
+    # target circuits at this size). BV n=32/64 dropped in R6: scaling
+    # versions of n=16 with bit-identical TIE pattern (CA/AOD/all K
+    # configs all return n_t / (2n+1) lanes), so they are redundancy
+    # padding rather than discriminative tests.
+    for n in [8, 16]:
         specs.append((f"BV n={n}", *bv(n)))
-    for n, k in [(16, 3), (24, 3), (40, 3)]:
+    # n=40 dropped in R6 (degenerate 0t/0l).
+    for n, k in [(16, 3), (24, 3)]:
         specs.append((f"random k={k} n={n}", *random_regular(n, k, 0)))
-    for n, d in [(16, 8), (24, 8), (40, 8)]:
-        specs.append((f"brick-wall n={n} d={d}", *brick_wall(n, d)))
-    # R5 boundary-stress additions: complete-bipartite, Clos, 2D-grid,
-    # dense-random k=5. Each is a topology family that exposes Gamma's
-    # predicted-commit advantage on structured / dense traffic.
+    # brick-wall fully dropped in R6 (n=16/24 are TYPE-A bit-identical;
+    # n=40 is degenerate 0t/0l).
+    # R5 boundary-stress additions retained: complete-bipartite K(m,n)
+    # exposes the bipartite-aware fallback path. Clos(3,3) and grid2d
+    # 4x4 d=4 dropped in R6 (TYPE-A bit-identical TIEs add zero signal).
     for m, n in [(4, 4), (4, 8)]:
         specs.append((f"K({m},{n})", *complete_bipartite(m, n)))
-    specs.append(("Clos(3,3)", *clos_network(3, 3)))
-    # grid2d 6x6 d=4 omitted (suite cap = 39); 4x4 covers the regime.
-    for rows, cols, d in [(4, 4, 4)]:
-        specs.append((f"grid2d {rows}x{cols} d={d}", *grid2d_cnot(rows, cols, d)))
     # k=5 dense random: seed=0 fails ≤500 trials so we use seed=1.
     for n, k, seed in [(20, 5, 1)]:
         specs.append((f"random k={k} n={n}", *random_regular(n, k, seed)))
