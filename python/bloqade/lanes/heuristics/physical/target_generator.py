@@ -721,6 +721,21 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         monotonically as commits accumulate. The dense-stage fallback in
         :meth:`generate` (controlled by ``dense_stage_threshold``) avoids
         the regime where this bias dominates the signal.
+
+        FUTURE WORK (Approach Gamma — predicted-commit pre-pass):
+        the structural fix is to predict the post-commit positions of
+        the still-uncommitted current-stage pairs ``j+1..n-1`` *before*
+        scoring pair ``j``, and stamp those predicted endpoints into
+        ``sim`` so lookahead path probes traverse the actual post-stage
+        topology rather than stale pre-stage positions. A natural
+        implementation is a single Dijkstra pre-pass over the un-
+        committed pairs at the start of each :meth:`generate` call
+        (cost roughly ``O(n^2 * K)`` for ``n`` current-stage pairs and
+        ``K`` lookahead stages), caching the predicted endpoints on
+        ``state``. The current density-guard (Approach Beta) suppresses
+        the symptom; Gamma would correct the bias at its source. Tracked
+        as PR #594 follow-up; see also ``AGENT3_VERDICT.md`` §3 in the
+        FTQC-Sim parent repo's ``scripts/bloqade_lanes_contrib/``.
         """
         if infeasible or self.K == 0 or new_loc is None:
             return math.inf if infeasible else 0.0
