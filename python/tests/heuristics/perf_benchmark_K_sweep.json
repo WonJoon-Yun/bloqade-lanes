@@ -396,6 +396,39 @@
     }
   },
   {
+    "benchmark": "star n=24",
+    "results": {
+      "Default": {
+        "trans": 23,
+        "lanes": 58
+      },
+      "CongAware": {
+        "trans": 23,
+        "lanes": 58
+      },
+      "AODCluster": {
+        "trans": 23,
+        "lanes": 58
+      },
+      "Lookahead K=2": {
+        "trans": 23,
+        "lanes": 56
+      },
+      "Lookahead K=4": {
+        "trans": 23,
+        "lanes": 58
+      },
+      "Lookahead K=6": {
+        "trans": 23,
+        "lanes": 58
+      },
+      "Lookahead K=8": {
+        "trans": 23,
+        "lanes": 58
+      }
+    }
+  },
+  {
     "benchmark": "star n=30",
     "results": {
       "Default": {
@@ -429,6 +462,39 @@
     }
   },
   {
+    "benchmark": "star n=32",
+    "results": {
+      "Default": {
+        "trans": 31,
+        "lanes": 73
+      },
+      "CongAware": {
+        "trans": 31,
+        "lanes": 73
+      },
+      "AODCluster": {
+        "trans": 31,
+        "lanes": 73
+      },
+      "Lookahead K=2": {
+        "trans": 31,
+        "lanes": 71
+      },
+      "Lookahead K=4": {
+        "trans": 31,
+        "lanes": 73
+      },
+      "Lookahead K=6": {
+        "trans": 31,
+        "lanes": 73
+      },
+      "Lookahead K=8": {
+        "trans": 31,
+        "lanes": 73
+      }
+    }
+  },
+  {
     "benchmark": "star n=40",
     "results": {
       "Default": {
@@ -458,6 +524,39 @@
       "Lookahead K=8": {
         "trans": 39,
         "lanes": 90
+      }
+    }
+  },
+  {
+    "benchmark": "star n=48",
+    "results": {
+      "Default": {
+        "trans": 47,
+        "lanes": 105
+      },
+      "CongAware": {
+        "trans": 47,
+        "lanes": 105
+      },
+      "AODCluster": {
+        "trans": 47,
+        "lanes": 105
+      },
+      "Lookahead K=2": {
+        "trans": 47,
+        "lanes": 103
+      },
+      "Lookahead K=4": {
+        "trans": 47,
+        "lanes": 105
+      },
+      "Lookahead K=6": {
+        "trans": 47,
+        "lanes": 105
+      },
+      "Lookahead K=8": {
+        "trans": 47,
+        "lanes": 105
       }
     }
   },
@@ -1052,6 +1151,171 @@
       "Lookahead K=8": {
         "trans": 0,
         "lanes": 0
+      }
+    }
+  },
+  {
+    "benchmark": "K(4,4)",
+    "results": {
+      "Default": {
+        "trans": 4,
+        "lanes": 36
+      },
+      "CongAware": {
+        "trans": 4,
+        "lanes": 48
+      },
+      "AODCluster": {
+        "trans": 4,
+        "lanes": 36
+      },
+      "Lookahead K=2": {
+        "trans": 4,
+        "lanes": 36
+      },
+      "Lookahead K=4": {
+        "trans": 4,
+        "lanes": 36
+      },
+      "Lookahead K=6": {
+        "trans": 4,
+        "lanes": 36
+      },
+      "Lookahead K=8": {
+        "trans": 4,
+        "lanes": 36
+      }
+    }
+  },
+  {
+    "benchmark": "K(4,8)",
+    "results": {
+      "Default": {
+        "trans": 8,
+        "lanes": 62
+      },
+      "CongAware": {
+        "trans": 7,
+        "lanes": 68
+      },
+      "AODCluster": {
+        "trans": 8,
+        "lanes": 62
+      },
+      "Lookahead K=2": {
+        "trans": 8,
+        "lanes": 62
+      },
+      "Lookahead K=4": {
+        "trans": 8,
+        "lanes": 62
+      },
+      "Lookahead K=6": {
+        "trans": 8,
+        "lanes": 62
+      },
+      "Lookahead K=8": {
+        "trans": 8,
+        "lanes": 62
+      }
+    }
+  },
+  {
+    "benchmark": "Clos(3,3)",
+    "results": {
+      "Default": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "CongAware": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "AODCluster": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "Lookahead K=2": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "Lookahead K=4": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "Lookahead K=6": {
+        "trans": 3,
+        "lanes": 18
+      },
+      "Lookahead K=8": {
+        "trans": 3,
+        "lanes": 18
+      }
+    }
+  },
+  {
+    "benchmark": "grid2d 4x4 d=4",
+    "results": {
+      "Default": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "CongAware": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "AODCluster": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "Lookahead K=2": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "Lookahead K=4": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "Lookahead K=6": {
+        "trans": 4,
+        "lanes": 16
+      },
+      "Lookahead K=8": {
+        "trans": 4,
+        "lanes": 16
+      }
+    }
+  },
+  {
+    "benchmark": "random k=5 n=20",
+    "results": {
+      "Default": {
+        "trans": 1,
+        "lanes": 6
+      },
+      "CongAware": {
+        "trans": 3,
+        "lanes": 30
+      },
+      "AODCluster": {
+        "trans": 2,
+        "lanes": 21
+      },
+      "Lookahead K=2": {
+        "trans": 3,
+        "lanes": 30
+      },
+      "Lookahead K=4": {
+        "trans": 3,
+        "lanes": 30
+      },
+      "Lookahead K=6": {
+        "trans": 3,
+        "lanes": 30
+      },
+      "Lookahead K=8": {
+        "trans": 3,
+        "lanes": 30
       }
     }
   }

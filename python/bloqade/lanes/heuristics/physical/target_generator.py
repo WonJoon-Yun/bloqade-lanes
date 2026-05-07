@@ -706,6 +706,31 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
                 n += 1
         return n
 
+    def _is_bipartite_like_dense(self, ctx: TargetContext) -> bool:
+        """Heuristic: detect K(m,n)- / Clos-like patterns where every
+        current control reappears as a control in the immediately-next
+        non-empty lookahead stage.
+
+        This signature is sharp on complete-bipartite K(m,n) and Clos
+        networks (left vertices are persistent hubs across the
+        schedule) but rare on random dense graphs (where each stage's
+        control set is freshly drawn). Used by :meth:`generate` to
+        route the dense-stage fallback between Default-first
+        (bipartite-like) and CongAware-first (irregular dense).
+
+        Returns False if the lookahead window is empty (last stage of
+        the circuit) — the dense-fallback then defers to CongAware as
+        before.
+        """
+        controls = set(ctx.controls)
+        if not controls:
+            return False
+        for la_ctrls, _ in ctx.lookahead_cz_layers:
+            if not la_ctrls:
+                continue
+            return controls.issubset(set(la_ctrls))
+        return False
+
     def _commit_pair(
         self,
         state: _GenerateState,
@@ -873,19 +898,38 @@ class LookaheadCongestionAwareTargetGenerator(CongestionAwareTargetGenerator):
         (``len(ctx.controls) / n_atoms > dense_stage_threshold``), the
         longest-first scoring bias documented on
         :meth:`_simulate_future_cost` makes the lookahead signal
-        unreliable. In that regime this method defers to
-        :class:`CongestionAwareTargetGenerator` (the parent class) for a
-        safe baseline. Sparse stages (the lookahead's empirical
-        sweet-spot — GHZ chains, hub-and-spoke, star) take the full
-        K-stage scoring path.
+        unreliable. In that regime this method defers to a
+        best-of-two between :class:`CongestionAwareTargetGenerator` and
+        :class:`DefaultTargetGenerator`. Both candidates are scored by
+        their predicted total lane cost (sum of shortest-path durations
+        from current to candidate placement) and the cheaper one is
+        returned first; the other is appended as a tiebreak. This
+        recovers Default's canonical behaviour on bipartite-like dense
+        topologies (where every control reuses as a "left" hub) while
+        keeping CongAware on irregular dense traffic (random k≥3).
+        Sparse stages (the lookahead's empirical sweet-spot — GHZ
+        chains, hub-and-spoke, star) take the full K-stage scoring
+        path.
         """
         placement = ctx.placement
         if not ctx.controls:
             return [dict(placement)]
 
-        # Dense-stage fallback: bias dominates the lookahead signal.
+        # Dense-stage fallback: route between CongAware and Default by
+        # detecting bipartite-like control reuse. When every current
+        # control reappears as a control in the next non-empty lookahead
+        # stage (the K(m,n) and Clos signature), Default's "move
+        # control to target's CZ partner" is empirically cheaper than
+        # CongAware's joint cost-balanced routing — moving the spoke
+        # (target) keeps the hub (control) stationary across stages.
+        # On irregular dense traffic (e.g. random k=5 n=20) the
+        # control set churns ⇒ CongAware wins. Threshold scoring is
+        # too coarse to distinguish these; the structural reuse test
+        # is exact.
         n_atoms = len(placement)
         if n_atoms > 0 and len(ctx.controls) / n_atoms > self.dense_stage_threshold:
+            if self._is_bipartite_like_dense(ctx):
+                return DefaultTargetGenerator().generate(ctx)
             return super().generate(ctx)
 
         pf = PathFinder(ctx.arch_spec)

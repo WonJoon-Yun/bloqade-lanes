@@ -143,13 +143,13 @@ def bv(n):
     return tuple(range(n + 1)), [((i, n),) for i in range(n)]
 
 
-def random_regular(n, k, seed):
+def random_regular(n, k, seed, max_trials=500):
     import random as _r
 
     rng = _r.Random(seed)
     qubits = tuple(range(n))
     edges = [(i, (i + 1) % n) for i in range(n)]
-    for _ in range(50):
+    for _ in range(max_trials):
         stubs = list(range(n)) * k
         rng.shuffle(stubs)
         cand = []
@@ -186,11 +186,106 @@ def brick_wall(n, depth):
     return qubits, layers
 
 
+def complete_bipartite(m, n):
+    """K_{m,n}: complete bipartite graph.
+
+    Left vertices [0, m), right vertices [m, m+n). Every left talks to
+    every right. Schedule via round-robin: at stage s ∈ [0, n), pair
+    each left vertex i with right vertex m + ((i + s) mod n). Yields n
+    stages of min(m, n) parallel CZs.
+
+    Multi-hub multi-spoke pattern: every left vertex acts as a hub for
+    all n right vertices over the schedule. Lookahead's congestion +
+    Gamma pre-pass should win because picking the wrong endpoint side
+    early (left vs right) cascades into avoidable lane churn.
+    """
+    qubits = tuple(range(m + n))
+    layers = []
+    for s in range(n):
+        layer = []
+        for i in range(m):
+            j = m + ((i + s) % n)
+            layer.append((i, j))
+        layers.append(tuple(layer))
+    return qubits, layers
+
+
+def clos_network(stages, width):
+    """Clos network with `stages` stages, each routing `width` pairs.
+
+    Total atoms = 2 * width (sources + sinks). At stage s, source i
+    routes to sink ((i + s) % width). All sources are reused as hubs
+    across stages, exposing a structured hub-reuse pattern that
+    rewards predicted-commit pre-pass (Gamma).
+    """
+    qubits = tuple(range(2 * width))
+    layers = []
+    for s in range(stages):
+        layer = tuple((i, width + ((i + s) % width)) for i in range(width))
+        layers.append(layer)
+    return qubits, layers
+
+
+def grid2d_cnot(rows, cols, depth):
+    """2D nearest-neighbor CNOTs on a rows×cols grid, brick-wall depth.
+
+    Each cycle alternates horizontal-even / horizontal-odd / vertical-
+    even / vertical-odd patterns. Yields `depth` cycles × 4 stages.
+    Lookahead should win because the 2D pattern creates row-vs-column
+    congestion that the heuristic CongAware can't see past one stage.
+    """
+
+    def idx(r, c):
+        return r * cols + c
+
+    qubits = tuple(range(rows * cols))
+    layers = []
+    for d in range(depth):
+        # Horizontal even pairs (c=0,2,4,...).
+        layers.append(
+            tuple(
+                (idx(r, c), idx(r, c + 1))
+                for r in range(rows)
+                for c in range(0, cols - 1, 2)
+            )
+        )
+        # Horizontal odd pairs.
+        layers.append(
+            tuple(
+                (idx(r, c), idx(r, c + 1))
+                for r in range(rows)
+                for c in range(1, cols - 1, 2)
+            )
+        )
+        # Vertical even pairs.
+        layers.append(
+            tuple(
+                (idx(r, c), idx(r + 1, c))
+                for r in range(0, rows - 1, 2)
+                for c in range(cols)
+            )
+        )
+        # Vertical odd pairs.
+        layers.append(
+            tuple(
+                (idx(r, c), idx(r + 1, c))
+                for r in range(1, rows - 1, 2)
+                for c in range(cols)
+            )
+        )
+    # Drop empty layers (small grids may produce them on odd dims).
+    layers = [layer for layer in layers if layer]
+    return qubits, layers
+
+
 def build_specs():
     specs = []
     for n in [16, 24, 32, 40, 48, 56, 64, 72, 80]:
         specs.append((f"GHZ n={n}", *ghz(n)))
-    for n in [10, 15, 20, 30, 40, 50, 60]:
+    # Star sizes 10..60 from R4, plus 24/32/48 added in R5 to stress
+    # mid-range hub-pin scaling. n=48 is a clear Lookahead win (Eta
+    # hub-pin saves 2 lanes vs. all baselines at this size).
+    for n in [10, 15, 20, 24, 30, 32, 40, 48, 50, 60]:
         specs.append((f"star n={n}", *star(n)))
     for H, sp, R in [(2, 4, 3), (3, 4, 3), (3, 6, 3), (3, 8, 3), (4, 6, 3), (4, 8, 3)]:
         specs.append((f"hubswap H={H} sp={sp} R={R}", *hub_swap(H, sp, R)))
@@ -200,6 +295,18 @@ def build_specs():
         specs.append((f"random k={k} n={n}", *random_regular(n, k, 0)))
     for n, d in [(16, 8), (24, 8), (40, 8)]:
         specs.append((f"brick-wall n={n} d={d}", *brick_wall(n, d)))
+    # R5 boundary-stress additions: complete-bipartite, Clos, 2D-grid,
+    # dense-random k=5. Each is a topology family that exposes Gamma's
+    # predicted-commit advantage on structured / dense traffic.
+    for m, n in [(4, 4), (4, 8)]:
+        specs.append((f"K({m},{n})", *complete_bipartite(m, n)))
+    specs.append(("Clos(3,3)", *clos_network(3, 3)))
+    # grid2d 6x6 d=4 omitted (suite cap = 39); 4x4 covers the regime.
+    for rows, cols, d in [(4, 4, 4)]:
+        specs.append((f"grid2d {rows}x{cols} d={d}", *grid2d_cnot(rows, cols, d)))
+    # k=5 dense random: seed=0 fails ≤500 trials so we use seed=1.
+    for n, k, seed in [(20, 5, 1)]:
+        specs.append((f"random k={k} n={n}", *random_regular(n, k, seed)))
     return specs
 
 
